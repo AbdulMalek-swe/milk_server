@@ -6,4 +6,9 @@ router
             message:"hit the backend"
         })
     })
+    .get("/user/registers", (req,res)=>{
+        res.send({
+            message:"hit the backends"
+        })
+    })
 module.exports = router;
