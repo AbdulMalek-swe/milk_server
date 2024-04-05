@@ -1,7 +1,5 @@
+const { generateToken } = require("../../utils/token");
 const { signupService, findUserByEmail } = require("./service");
-
- 
- 
    module.exports.signup = async (req, res) => {
     try {
         const user = await signupService(req.body);
@@ -65,5 +63,19 @@ const { signupService, findUserByEmail } = require("./service");
             });
           } 
     };
-    
-   
+   module.exports.getme = async(req,res)=>{
+    try {
+        const user = await findUserByEmail(req?.user?.email);
+        const {password:pwd,...other} = user.toObject();
+        res.status(200).json({
+          status: "succesfful",
+          message: "get user all data",
+          data: other
+        });
+      }
+      catch (error) {
+        res.status(500).json({
+          error: error.message
+        })
+      }
+   }
