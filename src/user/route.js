@@ -1,14 +1,7 @@
 const express = require("express");
+const user = require("./controller");
 const router = express.Router();
 router
-    .get("/user/register", (req,res)=>{
-        res.send({
-            message:"hit the backend"
-        })
-    })
-    .get("/user/registers", (req,res)=>{
-        res.send({
-            message:"hit the backends"
-        })
-    })
+    .get("/register",user.signup)
+     
 module.exports = router;
