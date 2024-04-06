@@ -3,7 +3,8 @@ const { createBlogService, getBlogService, getSingleBlogService, deleteServiceBy
  
    module.exports.createBlog = async (req, res) => {
     try {
-        const blog = await createBlogService(req.body)
+      console.log(req.file,"controller ")
+        const blog = await createBlogService(req.body,req.file)
         res.status(200).json({
           message:"succesfully added",
           result:blog
@@ -18,6 +19,7 @@ const { createBlogService, getBlogService, getSingleBlogService, deleteServiceBy
     
    module.exports.getBlog = async (req, res) => {
     try {
+      
       const blog = await getBlogService()
       res.status(200).json({
         message:"succesfully added",

@@ -7,36 +7,34 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please provide a first name"],
-      trim: true,
-      minLength: [3, "Name must be at least 3 characters."],
-      maxLength: [100, "Name is too large"],
+      // required: [true, "Please provide a first name"],
+      // trim: true,
+      // minLength: [3, "Name must be at least 3 characters."],
+      // maxLength: [100, "Name is too large"],
     },
-    
     email: {
       type: String,
-      validate: [validator.isEmail, "Provide a valid Email"],
-      trim: true,
-      lowercase: true,
-      unique: true,
-      required: [true, "Email address is required"],
+      // validate: [validator.isEmail, "Provide a valid Email"],
+      // trim: true,
+      // lowercase: true,
+      // unique: true,
+      // required: [true, "Email address is required"],
     },
     password: { 
       type: String,
-      required: [true, "Password is required"],
-      minLength:6
+      // required: [true, "Password is required"],
+      // minLength:6
     },
     confirmPassword: {
       type: String,
-      required: [true, "Please confirm your password"],
-      validate: {
-        validator: function (value) {
-          return value === this.password;
-        },
-        message: "Passwords don't match!",
-      },
+      // required: [true, "Please confirm your password"],
+      // validate: {
+      //   validator: function (value) {
+      //     return value === this.password;
+      //   },
+      //   message: "Passwords don't match!",
+      // },
     },
-    
     role: {
       type: String,
       enum: ["user", "admin"],

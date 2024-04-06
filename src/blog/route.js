@@ -1,8 +1,9 @@
 const express = require("express");
 const blog = require("./controller");
+const upload = require("../../middleware/upload");
 const router = express.Router();
 router
-    .post("/create",blog.createBlog)
+    .post("/create",upload.single("img"), blog.createBlog)
     .get("/get",blog.getBlog)
 router
     .get("/get/:id",blog.getSingleBlog)

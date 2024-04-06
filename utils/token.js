@@ -4,7 +4,7 @@ exports.generateToken = (userInfo) => {
         email: userInfo?.email,
         role: userInfo?.role
     }
-    const token = jwt.sign(payload,  "secret", {
+    const token = jwt.sign(payload,  "secretkey", {
         expiresIn: '4d'
     })
     return token;
