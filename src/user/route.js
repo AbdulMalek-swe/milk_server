@@ -4,6 +4,6 @@ const router = express.Router();
 router
     .post("/register",user.signup)
     .post("/login",user.signin)
-    .get("/getme",user.getme)
+     
      
 module.exports = router;

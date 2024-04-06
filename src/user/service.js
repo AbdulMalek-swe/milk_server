@@ -7,7 +7,7 @@ exports.signupService =async (userData)=>{
     return user;
 }
 exports.findUserByEmail =async (email)=>{
-   return await User.findOne({email}).populate({ path: "wishlist", model: "Product" }).exec()
+   return await User.findOne({email}) 
 }
 exports.findUserByToken =async (token)=>{
    

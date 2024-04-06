@@ -3,6 +3,7 @@ const {promisify} = require("util");
 module.exports.verifyToken = async(req,res,next)=>{
     try{
         const token = req.headers.authorization.split(" ")[1];
+        
         if(!token){
             res.status(401).json({
                 status: "authentiacation failed",
@@ -10,7 +11,7 @@ module.exports.verifyToken = async(req,res,next)=>{
                 error: error.message
               })
         }
-    const decode = await promisify(jwt.verify)(token,process.env.SECRET_JWT_KEY);
+    const decode = await promisify(jwt.verify)(token,"secretkey");
        req.user = decode
        next();
     }catch(error){

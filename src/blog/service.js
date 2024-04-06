@@ -15,3 +15,7 @@ module.exports.deleteServiceById = async (id)=>{
     console.log(id)
     return await Blog.findByIdAndDelete(id);
 }
+module.exports.updateService= async(id,data)=>{
+    console.log(data,"why data")
+    return await Blog.updateOne({_id:id},{$set:data})
+}

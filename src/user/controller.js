@@ -2,12 +2,18 @@ const { generateToken } = require("../../utils/token");
 const { signupService, findUserByEmail } = require("./service");
    module.exports.signup = async (req, res) => {
     try {
-       
+      const {email,password,confirmPassword} = req.body;
+      if (!email || !password || password!==confirmPassword) {
+        return res.status(401).json({ 
+          status: "fail",
+          error: "Please provide your credentials",
+        });
+      }
         const user = await signupService(req.body);
         await user.save({validateBeforeSave:false});
         const token =   generateToken(user);
         const { password: pwd, ...others } = user.toObject();
-        console.log(token)
+    
         res.status(200).json({  
           status: "succesfful",
           message: "account create successfully",
@@ -54,8 +60,8 @@ const { signupService, findUserByEmail } = require("./service");
             res.status(200).json({
               status: "success",
               message: "Successfully logged in",
-              token : token,
-              data:others
+              accesstoken:token,
+              user:others
             });
           } catch (error) {
           
