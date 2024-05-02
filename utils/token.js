@@ -1,11 +1,18 @@
 const jwt = require("jsonwebtoken")
-exports.generateToken = (userInfo) => {
-    const payload = {
-        email: userInfo?.email,
-        role: userInfo?.role
+exports.generateToken = async (user) => {
+    const accessToken =  user.generateAccessToken();
+    const refreshToken =  user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+    return {
+        accessToken,
+        refreshToken
     }
-    const token = jwt.sign(payload,  "secretkey", {
-        expiresIn: '4d'
-    })
-    return token;
+}
+exports.refreshTokenDecode = async(token)=>{
+    const decodedToken = jwt.verify(
+        token,
+        process.env.REFRESH_TOKEN_SECRET
+    )
+    return decodedToken
 }

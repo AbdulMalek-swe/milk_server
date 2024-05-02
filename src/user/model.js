@@ -1,70 +1,59 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
- 
-const bcrypt = require("bcryptjs");
-
-const userSchema = mongoose.Schema(
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken")
+const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      // required: [true, "Please provide a first name"],
-      // trim: true,
-      // minLength: [3, "Name must be at least 3 characters."],
-      // maxLength: [100, "Name is too large"],
-    },
     email: {
       type: String,
-      // validate: [validator.isEmail, "Provide a valid Email"],
-      // trim: true,
-      // lowercase: true,
-      // unique: true,
-      // required: [true, "Email address is required"],
+      required: true,
+      unique: true,
     },
-    password: { 
+    password: {
       type: String,
-      // required: [true, "Password is required"],
-      // minLength:6
+      required: true,
     },
-    confirmPassword: {
+    refreshToken: {
       type: String,
-      // required: [true, "Please confirm your password"],
-      // validate: {
-      //   validator: function (value) {
-      //     return value === this.password;
-      //   },
-      //   message: "Passwords don't match!",
-      // },
     },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
- 
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-userSchema.pre("save", function (next) {
-  if (!this.isModified("password")) {
-    //  only run if password is modified, otherwise it will change every time we save the user!
-    return next();
-  }
-  const password = this.password;
-  const hashedPassword = bcrypt.hashSync(password);
-  this.password = hashedPassword;
-  this.confirmPassword = undefined;
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-userSchema.methods.comparePassword = function (password, hash) {
-  const isPasswordValid = bcrypt.compareSync(password, hash);
-  return isPasswordValid;
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
- 
-const User = mongoose.model("User", userSchema);
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: "45s",
+    }
+  );
+};
 
-module.exports = User;
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      email: this.email,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: "15d",
+    }
+  );
+};
+
+ const User = mongoose.model("User", userSchema);
+module.exports = User

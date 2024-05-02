@@ -5,12 +5,10 @@ const { verifyToken } = require("../../middleware/verifytoken");
 const authorization = require("../../middleware/authorization");
 const router = express.Router();
 router
-    .post("/create",verifyToken,authorization("admin"), upload.single("img"), blog.createBlog)
+    .post("/create", upload.single("img"), blog.createBlog)
     .get("/get",blog.getBlog)
 router
     .get("/get/:id",blog.getSingleBlog)
-    .delete("/delete/:id", verifyToken,authorization("admin"), blog.deleteBlog)
-    .patch("/update/:id",verifyToken,authorization("admin"), blog.updateBlog)
-    
-     
+    .delete("/delete/:id",  blog.deleteBlog)
+    .patch("/update/:id", blog.updateBlog)
 module.exports = router;
