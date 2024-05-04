@@ -7,7 +7,8 @@ router
     .get("/:postId/comment", verifyToken,  comment.getComments)
     .post("/:postId/comment", verifyToken,  comment.postComments)
  router
-    .delete("/:id", verifyToken,  comment.deleteComment)
+    .delete("/:commentId", verifyToken,  comment.deleteComment)
+    .patch("/:commentId", verifyToken,  comment.updateComment)
   
   
 module.exports = router;

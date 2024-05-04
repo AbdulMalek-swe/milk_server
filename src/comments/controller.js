@@ -31,15 +31,36 @@ module.exports.postComments = async(req,res)=>{
 }
 module.exports.deleteComment = async(req,res)=>{
     try {
-        console.log(req.body);
-        const { content  } = req.body;
-        console.log(content);
-        const postId = req.params.postId;
+      const {commentId} = req.params;
+        const {author} = await Comment.findById( commentId);
         const {email} = req.user;
-        const {_id,name} = await findUserByEmail(email)
-        const comment = await Comment.findByIdAndDelete(id);
+        const {_id,name ,role} = await findUserByEmail(email)
+        if(role==="admin"||_id===author){
+          const comment = await Comment.findByIdAndDelete(commentId);
+         return res.status(201).json(comment);
+        }
         
-        res.status(201).json(comment);
+        res.status(500).json({ message: err.message });
+       
+      } catch (err) {
+        res.status(500).json({ message: err.message });
+      }
+}
+module.exports.updateComment = async(req,res)=>{
+    try {
+      const {commentId} = req.params;
+        const {author} = await Comment.findById( commentId);
+        const {email} = req.user;
+        const {_id,name ,role} = await findUserByEmail(email)
+        if(role==="admin"||_id===author){
+          const comment = await Comment.findByIdAndUpdate(commentId,{
+       content:req.body.content
+          }, { new: true });
+         return res.status(201).json(comment);
+        }
+        
+        res.status(500).json({ message: err.message });
+       
       } catch (err) {
         res.status(500).json({ message: err.message });
       }
