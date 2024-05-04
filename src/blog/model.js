@@ -4,7 +4,6 @@ const blogSchema = mongoose.Schema(
   {
     img: {
         type: String,
-        
       },
     title: {
         type: String,
@@ -14,14 +13,18 @@ const blogSchema = mongoose.Schema(
         type: String,
         required: true
       },
-      category: {
-        type: String,
+       
+      author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Reference to the User model (if you have user authentication)
         required: true
       },
-      mainContent: {
-         type:String
-      },
-      
+      comments: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Comment'
+        }
+      ]
   },
   {
     timestamps: true,

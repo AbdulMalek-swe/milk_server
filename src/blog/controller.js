@@ -1,14 +1,19 @@
+const { findUserByEmail } = require("../user/service");
 const { createBlogService, getBlogService, getSingleBlogService, deleteServiceById, updateService } = require("./service")
    module.exports.createBlog = async (req, res) => {
     try {
       console.log(req.file,"controller ")
-        const blog = await createBlogService(req.body,req.file)
+      const {email} = req.user;
+       
+      const user = await findUserByEmail(email);
+        const blog = await createBlogService({...req.body,author:user?._id},req.file)
         res.status(200).json({
           message:"succesfully added",
           result:blog
         })
       }
       catch (error) {
+        console.log(error.message)
         res.status(401).json({
          error: error.message
         })
@@ -16,11 +21,16 @@ const { createBlogService, getBlogService, getSingleBlogService, deleteServiceBy
     } 
    module.exports.getBlog = async (req, res) => {
     try {
-      
-      const blog = await getBlogService()
+      console.log(req.query,"my blog query")
+      const query = req.query.text; // Assuming 'q' parameter contains search query
+    const page = parseInt(req.query.page) || 1; // Page number, default to 1
+    const limit = parseInt(req.query.limit) || 5; // Number of results per page, default to 10
+
+      const {totalPage,searchResults} = await getBlogService(query,page,limit)
       res.status(200).json({
         message:"succesfully added",
-        result:blog
+        result:searchResults,
+        totalPage:totalPage
       })
     }
       catch (error) {

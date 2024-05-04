@@ -5,7 +5,7 @@ const { verifyToken } = require("../../middleware/verifytoken");
 const authorization = require("../../middleware/authorization");
 const router = express.Router();
 router
-    .post("/create", upload.single("img"), blog.createBlog)
+    .post("/create", verifyToken, upload.single("img"), blog.createBlog)
     .get("/get",blog.getBlog)
 router
     .get("/get/:id",blog.getSingleBlog)

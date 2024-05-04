@@ -13,13 +13,18 @@ const { signupService, findUserByEmail } = require("./service");
         const user = await signupService(req.body);
         const {accessToken,refreshToken} =  await generateToken(user)
         const { password: pwd, ...others } = user.toObject();
-        res.status(200).json({  
-          status: "succesfful",
-          message: "account create successfully",
-          accesstoken:accessToken,
-          refreshToken:refreshToken,
-          user:others
-        });
+        const options = {
+          httpOnly: true,
+          secure: true,
+        };
+        res.status(200) .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options).json({
+              status: "success",
+              message: "Successfully logged in",
+              accessToken:accessToken,
+              refreshToken:refreshToken,
+              user:others
+            });
       }
       catch (error) {
         res.status(401).json({
@@ -37,6 +42,7 @@ const { signupService, findUserByEmail } = require("./service");
               });
             }
             const user = await findUserByEmail(email);
+            console.log(user);
             if (!user) {
               return res.status(401).json({
                 status: "fail",
@@ -60,7 +66,7 @@ const { signupService, findUserByEmail } = require("./service");
             .cookie("refreshToken", refreshToken, options).json({
               status: "success",
               message: "Successfully logged in",
-              accesstoken:accessToken,
+              accessToken:accessToken,
               refreshToken:refreshToken,
               user:others
             });
@@ -78,15 +84,35 @@ const { signupService, findUserByEmail } = require("./service");
          console.log(user)
       const {accessToken,refreshToken} = await  generateToken(user)
         res.status(200).json({
-          status: "fail",
-          error: "error is back dfgdf",
-           accesstoken:accessToken,
+          status: "success",
+          message: "success",
+           accessToken:accessToken,
            refreshToken:refreshToken,
         });
       } catch (error) {
         res.status(400).json({
           status: "fail",
           error:error.message
+        });
+      }
+    }
+  
+    module.exports.veryfiTokens = async(req,res)=>{
+      try {
+        const {email} = req.user;
+       console.log(email)
+     
+        res.status(200).json({
+          status: "fail",
+          error: "error is back dfgdf",
+           valid:true
+            
+        });
+      } catch (error) {
+        console.log(error.message,"come to error in verify token")
+        res.status(400).json({
+          status: "fail",
+          valid:false
         });
       }
     }
