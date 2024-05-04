@@ -9,6 +9,6 @@ router
     .get("/get",blog.getBlog)
 router
     .get("/get/:id",blog.getSingleBlog)
-    .delete("/delete/:id",  blog.deleteBlog)
-    .patch("/update/:id", blog.updateBlog)
+    .delete("/delete/:id", verifyToken, blog.deleteBlog)
+    .patch("/update/:id",verifyToken, blog.updateBlog)
 module.exports = router;

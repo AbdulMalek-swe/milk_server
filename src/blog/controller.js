@@ -1,4 +1,5 @@
 const { findUserByEmail } = require("../user/service");
+const Blog = require("./model");
 const { createBlogService, getBlogService, getSingleBlogService, deleteServiceById, updateService } = require("./service")
    module.exports.createBlog = async (req, res) => {
     try {
@@ -56,12 +57,18 @@ const { createBlogService, getBlogService, getSingleBlogService, deleteServiceBy
     
    module.exports.deleteBlog = async (req, res) => {
     try {
-      console.log(req.user)
-        const result = await deleteServiceById(req.params.id)
-        res.status(200).json({
-          message:"succesfully added",
-          result:result
-        })
+      
+   
+        const {author} = await Blog.findById(req.params.id);
+        const {email} = req.user;
+        const {_id,name ,role} = await findUserByEmail(email)
+        if(role==="admin"||_id===author){
+          const blog = await deleteServiceById(req.params.id);
+         return res.status(201).json(blog);
+        }
+        res.status(401).json({
+          error:  "no successfull delete"
+         })
       }
       catch (error) {
         res.status(401).json({
@@ -72,12 +79,17 @@ const { createBlogService, getBlogService, getSingleBlogService, deleteServiceBy
     
    module.exports.updateBlog = async (req, res) => {
     try {
-      console.log(req.body)
-       const result = await updateService(req.params.id,req.body);
-       res.status(200).json({
-        message:"succesfully added",
-        result:result
-      })
+      
+       const {author} = await Blog.findById(req.params.id);
+       const {email} = req.user;
+       const {_id,name ,role} = await findUserByEmail(email)
+       if(role==="admin"||_id===author){
+        const result = await updateService(req.params.id,req.body);
+        return res.status(201).json(result);
+       }
+       res.status(401).json({
+        error:  "no successfull delete"
+       })
       }
       catch (error) {
         res.status(401).json({
